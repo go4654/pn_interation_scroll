@@ -19,6 +19,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 10;
 }
 
 .logo {
@@ -66,11 +68,22 @@ body.header_fix header {
   display: none;
   left: 0;
   top: 40vh;
+  opacity: 0;
 }
 
-#view_section_0 .section_0 .fix_title {
+#view_section_0 .section_0 .fix_title,
+#view_section_1 .section_1 .fix_canvas canvas {
   display: block;
-  /* transform: translate(-50%, -50%); */
+}
 
-  opacity: 0;
+.fix_canvas {
+  height: 100%;
+  top: 0;
+}
+
+.fix_canvas canvas {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: none;
 }

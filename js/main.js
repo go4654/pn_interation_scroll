@@ -20,26 +20,28 @@
       values: {
         fix_title_1_opacity_in: [0, 1, { start: 0.1, end: 0.2 }],
         fix_title_1_opacity_out: [1, 0, { start: 0.25, end: 0.3 }],
-        fix_title_1_translateX_in: [7, 0, { start: 0.1, end: 0.2 }],
-        fix_title_1_translateY_out: [0, -60, { start: 0.25, end: 0.3 }],
+        fix_title_1_translateX_in: [5, 0, { start: 0.1, end: 0.2 }],
+        fix_title_1_translateY_out: [0, -120, { start: 0.25, end: 0.3 }],
 
         fix_title_2_opacity_in: [0, 1, { start: 0.3, end: 0.35 }],
         fix_title_2_opacity_out: [1, 0, { start: 0.4, end: 0.45 }],
-        fix_title_2_translateX_in: [-7, 0, { start: 0.3, end: 0.35 }],
-        fix_title_2_translateY_out: [0, -60, { start: 0.4, end: 0.45 }],
+        fix_title_2_translateX_in: [-5, 0, { start: 0.3, end: 0.35 }],
+        fix_title_2_translateY_out: [0, -120, { start: 0.4, end: 0.45 }],
 
         fix_title_3_opacity_in: [0, 1, { start: 0.45, end: 0.5 }],
         fix_title_3_opacity_out: [1, 0, { start: 0.55, end: 0.6 }],
-        fix_title_3_translateX_in: [7, 0, { start: 0.45, end: 0.5 }],
-        fix_title_3_translateY_out: [0, -60, { start: 0.55, end: 0.6 }],
+        fix_title_3_translateX_in: [2, 0, { start: 0.45, end: 0.5 }],
+        fix_title_3_translateY_out: [0, -120, { start: 0.55, end: 0.6 }],
 
         fix_title_4_opacity_in: [0, 1, { start: 0.6, end: 0.65 }],
         fix_title_4_opacity_out: [1, 0, { start: 0.7, end: 0.75 }],
-        fix_title_4_translateX_in: [-7, 0, { start: 0.6, end: 0.65 }],
-        fix_title_4_translateY_out: [0, -60, { start: 0.7, end: 0.75 }],
+        fix_title_4_translateX_in: [-2, 0, { start: 0.6, end: 0.65 }],
+        fix_title_4_translateY_out: [0, -120, { start: 0.7, end: 0.75 }],
 
         fix_title_5_opacity_in: [0, 1, { start: 0.8, end: 0.9 }],
         fix_title_5_opacity_out: [1, 0, { start: 0.95, end: 1 }],
+        fix_title_5_scale_in: [5, 1, { start: 0.8, end: 0.9 }],
+        fix_title_5_translateY_out: [0, -120, { start: 0.95, end: 1 }],
       },
     },
     {
@@ -48,6 +50,18 @@
       scrollHeight: 0,
       el: {
         section: document.querySelector(".section_1"),
+        canvas: document.querySelector(".section_1 .canvas_1"),
+        context: document
+          .querySelector(".section_1 .canvas_1")
+          .getContext("2d"),
+        canvasImgs: [],
+      },
+      values: {
+        totalImgCount: 255,
+        imgCount: [0, 254],
+
+        canvas_opacity_in: [0, 1, { start: 0, end: 0.1 }],
+        canvas_opacity_out: [1, 0, { start: 0.9, end: 1 }],
       },
     },
     {
@@ -76,6 +90,15 @@
     }
   };
 
+  const setCanvasImg = () => {
+    let imgEl;
+    for (let i = 0; i < sectionInfo[1].values.totalImgCount; i++) {
+      imgEl = new Image();
+      imgEl.src = `./videos/section_1/intro_${1000 + i}.jpg`;
+      sectionInfo[1].el.canvasImgs.push(imgEl);
+    }
+  };
+
   const setLayout = () => {
     for (let i = 0; i < sectionInfo.length; i++) {
       if (sectionInfo[i].type === "fix") {
@@ -100,6 +123,9 @@
       }
     }
     document.body.setAttribute("id", `view_section_${currentSection}`);
+
+    const widthRatio = window.innerWidth / 1920;
+    sectionInfo[1].el.canvas.style.transform = `translate3d(-50%,-50%,0) scale(${widthRatio})`;
   };
 
   const calcValues = (values, currentYOffset) => {
@@ -223,15 +249,39 @@
             values.fix_title_5_opacity_in,
             currentYOffset
           );
+          el.fixTitle_5.style.transform = `scale(${calcValues(
+            values.fix_title_5_scale_in,
+            currentYOffset
+          )})`;
         } else {
           el.fixTitle_5.style.opacity = calcValues(
             values.fix_title_5_opacity_out,
             currentYOffset
           );
+          el.fixTitle_5.style.transform = `translate3d(0,${calcValues(
+            values.fix_title_5_translateY_out,
+            currentYOffset
+          )}%,0)`;
         }
+
         break;
 
       case 1:
+        const imgs = Math.round(calcValues(values.imgCount, currentYOffset));
+        el.context.drawImage(el.canvasImgs[imgs], 0, 0);
+
+        if (scrollRatio < 0.5) {
+          el.canvas.style.opacity = calcValues(
+            values.canvas_opacity_in,
+            currentYOffset
+          );
+        } else {
+          el.canvas.style.opacity = calcValues(
+            values.canvas_opacity_out,
+            currentYOffset
+          );
+        }
+
         break;
 
       case 2:
@@ -243,21 +293,26 @@
   };
 
   const scrollHandler = () => {
+    intoNewSection = false;
     prevScrollHeight = 0;
     for (let i = 0; i < currentSection; i++) {
       prevScrollHeight += sectionInfo[i].scrollHeight;
     }
 
     if (yOffset > prevScrollHeight + sectionInfo[currentSection].scrollHeight) {
+      intoNewSection = true;
       currentSection++;
       document.body.setAttribute("id", `view_section_${currentSection}`);
     }
 
     if (yOffset < prevScrollHeight) {
+      intoNewSection = true;
       if (yOffset === 0) return;
       currentSection--;
       document.body.setAttribute("id", `view_section_${currentSection}`);
     }
+
+    if (intoNewSection) return;
 
     scrollAni();
   };
@@ -271,4 +326,6 @@
       scrollHandler();
     });
   });
+
+  setCanvasImg();
 })();
