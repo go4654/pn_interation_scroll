@@ -62,6 +62,8 @@
 
         canvas_opacity_in: [0, 1, { start: 0, end: 0.1 }],
         canvas_opacity_out: [1, 0, { start: 0.9, end: 1 }],
+
+        canvasY: 0,
       },
     },
     {
@@ -70,6 +72,17 @@
       scrollHeight: 0,
       el: {
         section: document.querySelector(".section_2"),
+        canvas: document.querySelector(".section_2 .canvas_2"),
+        context: document
+          .querySelector(".section_2 .canvas_2")
+          .getContext("2d"),
+        imgPath: ["./img/img_1.jpg"],
+        imgs: [],
+      },
+      values: {
+        canvas_scale: [1, 0.9, { start: 0, end: 0.1 }],
+
+        fix_canvas: [],
       },
     },
     {
@@ -96,6 +109,13 @@
       imgEl = new Image();
       imgEl.src = `./videos/section_1/intro_${1000 + i}.jpg`;
       sectionInfo[1].el.canvasImgs.push(imgEl);
+    }
+
+    let imgEl2;
+    for (let i = 0; i < sectionInfo[2].el.imgPath.length; i++) {
+      imgEl2 = new Image();
+      imgEl2.src = sectionInfo[2].el.imgPath[i];
+      sectionInfo[2].el.imgs.push(imgEl2);
     }
   };
 
@@ -124,8 +144,8 @@
     }
     document.body.setAttribute("id", `view_section_${currentSection}`);
 
-    const widthRatio = window.innerWidth / 1920;
-    sectionInfo[1].el.canvas.style.transform = `translate3d(-50%,-50%,0) scale(${widthRatio})`;
+    // const heightRatio = window.innerHeight / 1080;
+    sectionInfo[1].el.canvas.style.transform = `translate3d(-50%,-50%,0)`;
   };
 
   const calcValues = (values, currentYOffset) => {
@@ -270,7 +290,7 @@
         const imgs = Math.round(calcValues(values.imgCount, currentYOffset));
         el.context.drawImage(el.canvasImgs[imgs], 0, 0);
 
-        if (scrollRatio < 0.5) {
+        if (scrollRatio <= 0.5) {
           el.canvas.style.opacity = calcValues(
             values.canvas_opacity_in,
             currentYOffset
@@ -282,9 +302,41 @@
           );
         }
 
+        if (scrollRatio <= 0.7) {
+          sectionInfo[2].el.section.style.backgroundColor = "#1d1d1d";
+          sectionInfo[2].el.context.drawImage(sectionInfo[2].el.imgs[0], 0, 0);
+        }
+
         break;
 
       case 2:
+        el.context.drawImage(el.imgs[0], 0, 0);
+        if (scrollRatio <= 0.12) {
+          el.canvas.style.transform = `scale(${calcValues(
+            values.canvas_scale,
+            currentYOffset
+          )})`;
+        }
+
+        if (scrollRatio > sectionInfo[2].values.canvas_scale[2].end) {
+          el.canvas.classList.add("img_fix");
+
+          const widthRatio = el.canvas.width / document.body.offsetWidth;
+
+          if (!values.canvasY) {
+            values.canvasY =
+              el.canvas.offsetTop +
+              (el.canvas.height - el.canvas.height * widthRatio) / 2;
+          }
+
+          el.canvas.style.top = `${
+            values.canvasY +
+            (el.canvas.height - el.canvas.height * widthRatio) / 2
+          }px`;
+        } else {
+          el.canvas.classList.remove("img_fix");
+        }
+
         break;
 
       case 3:
@@ -319,6 +371,8 @@
 
   window.addEventListener("load", () => {
     setLayout();
+
+    window.addEventListener("resize", setLayout);
 
     window.addEventListener("scroll", () => {
       yOffset = window.pageYOffset;

@@ -21,6 +21,8 @@ header {
   align-items: center;
   position: relative;
   z-index: 10;
+  background-color: #1d1d1d60;
+  backdrop-filter: blur(10px);
 }
 
 .logo {
@@ -72,7 +74,8 @@ body.header_fix header {
 }
 
 #view_section_0 .section_0 .fix_title,
-#view_section_1 .section_1 .fix_canvas canvas {
+#view_section_1 .section_1 .fix_canvas canvas,
+#view_section_1 .section_2 .fix_canvas .canvas_2 {
   display: block;
 }
 
@@ -81,9 +84,46 @@ body.header_fix header {
   top: 0;
 }
 
-.fix_canvas canvas {
+.fix_canvas .canvas_1 {
   position: fixed;
   top: 50%;
   left: 50%;
   display: none;
+}
+
+.section_2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.canvas_2 {
+  max-width: 984px;
+  width: 100%;
+  position: static;
+  display: block;
+}
+
+.section_2 .title {
+  font-size: 80px;
+  font-weight: 700;
+  margin-bottom: 200px;
+}
+
+.canvas_2.img_fix {
+  position: fixed;
+  top: 0%;
+}
+
+.section_2 .fix_canvas {
+  width: 984px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ########### */
+
+@media screen and (min-width: 1024px) {
 }
