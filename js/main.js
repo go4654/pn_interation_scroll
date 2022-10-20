@@ -329,10 +329,7 @@
               (el.canvas.height - el.canvas.height * widthRatio) / 2;
           }
 
-          el.canvas.style.top = `${
-            values.canvasY +
-            (el.canvas.height - el.canvas.height * widthRatio) / 2
-          }px`;
+          el.canvas.style.top = `${values.canvasY}px`;
         } else {
           el.canvas.classList.remove("img_fix");
         }
