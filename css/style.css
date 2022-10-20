@@ -1,0 +1,76 @@
+@import url(./reset.css);
+
+body {
+  background-color: #1d1d1d;
+  overflow-x: hidden;
+}
+
+section {
+  padding-top: 35vh;
+  /* border: 1px solid white; */
+  position: relative;
+}
+
+/* ############## */
+
+header {
+  height: 60px;
+  padding: 0 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.global_nav {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.global_nav li {
+  margin-left: 30px;
+}
+
+body.header_fix header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #555;
+}
+/* header */
+
+.section_0 {
+  display: flex;
+  justify-content: center;
+}
+
+.section_0 .title {
+  font-size: 130px;
+  font-weight: 700;
+  letter-spacing: -5px;
+}
+
+.fix_title {
+  width: 100%;
+  position: fixed;
+  font-size: 80px;
+  font-weight: 700;
+  text-align: center;
+  display: none;
+  left: 0;
+  top: 40vh;
+}
+
+#view_section_0 .section_0 .fix_title {
+  display: block;
+  /* transform: translate(-50%, -50%); */
+
+  opacity: 0;
+}
