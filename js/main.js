@@ -6,6 +6,7 @@
 
   const sectionInfo = [
     {
+      //0
       type: "fix",
       heightNum: 5,
       scrollHeight: 0,
@@ -45,6 +46,7 @@
       },
     },
     {
+      //1
       type: "fix",
       heightNum: 5,
       scrollHeight: 0,
@@ -62,16 +64,16 @@
 
         canvas_opacity_in: [0, 1, { start: 0, end: 0.1 }],
         canvas_opacity_out: [1, 0, { start: 0.9, end: 1 }],
-
-        canvasY: 0,
       },
     },
     {
+      //2
       type: "fix",
       heightNum: 5,
       scrollHeight: 0,
       el: {
         section: document.querySelector(".section_2"),
+        title: document.querySelector(".section_2 .title"),
         canvas: document.querySelector(".section_2 .canvas_2"),
         context: document
           .querySelector(".section_2 .canvas_2")
@@ -80,17 +82,34 @@
         imgs: [],
       },
       values: {
-        canvas_scale: [1, 0.9, { start: 0, end: 0.1 }],
+        canvas_scale: [1, 0.8, { start: 0, end: 0.5 }],
+        title_translateX: [70, -100, { start: 0.1, end: 0.5 }],
+        canvas_opacity_out: [1, 0, { start: 0.5, end: 0.8 }],
 
-        fix_canvas: [],
+        // fix_canvas: [],
+        canvasY: 0,
       },
     },
     {
+      //3
       type: "fix",
       heightNum: 5,
       scrollHeight: 0,
       el: {
         section: document.querySelector(".section_3"),
+        fixBox: document.querySelector(".section_3 .fix_box"),
+        con_1: document.querySelector(".section_3 .fix_box .con_1"),
+        con_2: document.querySelector(".section_3 .fix_box .con_2"),
+        con_3: document.querySelector(".section_3 .fix_box .con_3"),
+      },
+      values: {
+        fixBox_opacity: [0, 1, { start: 0, end: 0.1 }],
+        fixBox_translateY: [100, 0, { start: 0, end: 0.1 }],
+
+        con_1_rotate: [0, -10, { start: 0.2, end: 0.3 }],
+        con_3_rotate: [0, 10, { start: 0.2, end: 0.3 }],
+
+        con_2_translateY: [0, -70, { start: 0.2, end: 0.3 }],
       },
     },
   ];
@@ -311,32 +330,84 @@
 
       case 2:
         el.context.drawImage(el.imgs[0], 0, 0);
-        if (scrollRatio <= 0.12) {
+        const widthRatio = el.canvas.width / document.body.offsetWidth;
+        const heightRatio = el.canvas.height / window.innerHeight;
+        let scaleRatio;
+
+        if (widthRatio <= heightRatio) {
+          scaleRatio = heightRatio;
+        } else {
+          scaleRatio = widthRatio;
+        }
+
+        if (scrollRatio <= 0.07) {
           el.canvas.style.transform = `scale(${calcValues(
             values.canvas_scale,
             currentYOffset
           )})`;
+
+          if (scrollRatio <= sectionInfo[2].values.canvas_scale[2].end) {
+            el.canvas.style.top = 0;
+            el.canvas.classList.remove("img_fix");
+            el.title.classList.remove("fix");
+          } else {
+            el.canvas.classList.add("img_fix");
+            el.title.classList.add("fix");
+
+            el.canvas.style.top = `${
+              (el.canvas.height - el.canvas.height * scaleRatio) / 2
+            }px`;
+          }
         }
 
-        if (scrollRatio > sectionInfo[2].values.canvas_scale[2].end) {
-          el.canvas.classList.add("img_fix");
+        if (scrollRatio <= sectionInfo[2].values.canvas_scale[2].end + 0.8) {
+          el.title.style.transform = `translate3d(${calcValues(
+            values.title_translateX,
+            currentYOffset
+          )}%,0,0)`;
 
-          const widthRatio = el.canvas.width / document.body.offsetWidth;
+          el.canvas.style.opacity = calcValues(
+            values.canvas_opacity_out,
+            currentYOffset
+          );
+        }
 
-          if (!values.canvasY) {
-            values.canvasY =
-              el.canvas.offsetTop +
-              (el.canvas.height - el.canvas.height * widthRatio) / 2;
-          }
-
-          el.canvas.style.top = `${values.canvasY}px`;
-        } else {
+        if (scrollRatio >= sectionInfo[2].values.canvas_scale[2].end + 0.8) {
           el.canvas.classList.remove("img_fix");
         }
 
         break;
 
       case 3:
+        if (scrollRatio <= 0.12) {
+          el.fixBox.style.opacity = calcValues(
+            values.fixBox_opacity,
+            currentYOffset
+          );
+
+          el.fixBox.style.transform = `translate3d(0,${calcValues(
+            values.fixBox_translateY,
+            currentYOffset
+          )}%,0)`;
+        }
+
+        if (scrollRatio <= 0.32) {
+          el.con_1.style.transform = `rotate(${calcValues(
+            values.con_1_rotate,
+            currentYOffset
+          )}deg)`;
+
+          el.con_2.style.transform = `translate3d(0,${calcValues(
+            values.con_2_translateY,
+            currentYOffset
+          )}px,0)`;
+
+          el.con_3.style.transform = `rotate(${calcValues(
+            values.con_3_rotate,
+            currentYOffset
+          )}deg)`;
+        }
+
         break;
     }
   };
@@ -369,12 +440,14 @@
   window.addEventListener("load", () => {
     setLayout();
 
-    window.addEventListener("resize", setLayout);
-
     window.addEventListener("scroll", () => {
       yOffset = window.pageYOffset;
       navHandler();
       scrollHandler();
+    });
+    window.addEventListener("resize", () => {
+      location.reload();
+      setLayout();
     });
   });
 
