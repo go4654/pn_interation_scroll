@@ -82,9 +82,9 @@
         imgs: [],
       },
       values: {
-        canvas_scale: [1, 0.8, { start: 0, end: 0.5 }],
+        canvas_scale: [1, 0.5, { start: 0, end: 0.1 }],
         title_translateX: [70, -100, { start: 0.1, end: 0.5 }],
-        canvas_opacity_out: [1, 0, { start: 0.5, end: 0.8 }],
+        canvas_opacity_out: [1, 0, { start: 0.5, end: 1 }],
 
         // fix_canvas: [],
         canvasY: 0,
@@ -114,13 +114,13 @@
     },
   ];
 
-  const navHandler = () => {
-    if (yOffset >= 100) {
-      document.body.classList.add("header_fix");
-    } else {
-      document.body.classList.remove("header_fix");
-    }
-  };
+  // const navHandler = () => {
+  //   if (yOffset >= 100) {
+  //     document.body.classList.add("header_fix");
+  //   } else {
+  //     document.body.classList.remove("header_fix");
+  //   }
+  // };
 
   const setCanvasImg = () => {
     let imgEl;
@@ -340,7 +340,7 @@
           scaleRatio = widthRatio;
         }
 
-        if (scrollRatio <= 0.07) {
+        if (scrollRatio <= 0.7) {
           el.canvas.style.transform = `scale(${calcValues(
             values.canvas_scale,
             currentYOffset
@@ -350,13 +350,19 @@
             el.canvas.style.top = 0;
             el.canvas.classList.remove("img_fix");
             el.title.classList.remove("fix");
+            // console.log(
+            //   scrollRatio <= sectionInfo[2].values.canvas_scale[2].end
+            // );
+            console.log(scrollRatio);
+            console.log(sectionInfo[2].values.canvas_scale[2].end);
           } else {
+            console.log("@@@");
             el.canvas.classList.add("img_fix");
             el.title.classList.add("fix");
 
-            el.canvas.style.top = `${
-              (el.canvas.height - el.canvas.height * scaleRatio) / 2
-            }px`;
+            // el.canvas.style.top = `${
+            //   (el.canvas.height - el.canvas.height * scaleRatio) / 2
+            // }px`;
           }
         }
 
@@ -442,7 +448,7 @@
 
     window.addEventListener("scroll", () => {
       yOffset = window.pageYOffset;
-      navHandler();
+      // navHandler();
       scrollHandler();
     });
     window.addEventListener("resize", () => {
