@@ -78,12 +78,13 @@
         context: document
           .querySelector(".section_2 .canvas_2")
           .getContext("2d"),
-        imgPath: ["./img/img_1.jpg"],
+        imgPath: ["./img/img_1.png"],
         imgs: [],
       },
       values: {
         canvas_scale: [1, 0.5, { start: 0, end: 0.1 }],
         title_translateX: [70, -100, { start: 0.1, end: 0.5 }],
+        canvas_opacity_in: [0, 1, { start: 0.7, end: 1 }],
         canvas_opacity_out: [1, 0, { start: 0.5, end: 1 }],
 
         // fix_canvas: [],
@@ -321,15 +322,19 @@
           );
         }
 
-        if (scrollRatio <= 0.7) {
+        if (scrollRatio >= 0.9) {
           sectionInfo[2].el.section.style.backgroundColor = "#1d1d1d";
-          sectionInfo[2].el.context.drawImage(sectionInfo[2].el.imgs[0], 0, 0);
+          sectionInfo[2].el.context.drawImage(
+            sectionInfo[2].el.imgs[0],
+            -900,
+            -500
+          );
         }
 
         break;
 
       case 2:
-        el.context.drawImage(el.imgs[0], 0, 0);
+        el.context.drawImage(el.imgs[0], -900, -500);
         const widthRatio = el.canvas.width / document.body.offsetWidth;
         const heightRatio = el.canvas.height / window.innerHeight;
         let scaleRatio;
@@ -350,13 +355,7 @@
             el.canvas.style.top = 0;
             el.canvas.classList.remove("img_fix");
             el.title.classList.remove("fix");
-            // console.log(
-            //   scrollRatio <= sectionInfo[2].values.canvas_scale[2].end
-            // );
-            console.log(scrollRatio);
-            console.log(sectionInfo[2].values.canvas_scale[2].end);
           } else {
-            console.log("@@@");
             el.canvas.classList.add("img_fix");
             el.title.classList.add("fix");
 
@@ -371,7 +370,6 @@
             values.title_translateX,
             currentYOffset
           )}%,0,0)`;
-
           el.canvas.style.opacity = calcValues(
             values.canvas_opacity_out,
             currentYOffset

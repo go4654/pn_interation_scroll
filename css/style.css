@@ -130,7 +130,8 @@ body.header_fix header {
 }
 
 .section_2 .title {
-  width: 2000px;
+  overflow: hidden;
+  width: 2200px;
   /* width: 100%; */
   font-size: 170px;
   font-weight: 700;
@@ -152,11 +153,13 @@ body.header_fix header {
   position: fixed;
   top: 0;
   z-index: 9;
+  /* display: block; */
 }
 
-/* .canvas_2 {
-  display: none;
-} */
+.canvas_2 {
+  /* display: none; */
+  opacity: 0.1;
+}
 
 @media screen and (max-width: 768px) {
   .section_2 .title.fix {
